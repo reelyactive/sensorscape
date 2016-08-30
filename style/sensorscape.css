@@ -9,6 +9,13 @@ body {
   margin-bottom: 60px;
 }
 
+.identifier {
+  font-family: monospace;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #5a5a5a;
+}
+
 /* Begin Bootstrap 3 navbar override */
 .navbar-default {
     background-color: #0770a2;
@@ -137,10 +144,6 @@ body {
   margin-left: 1em;
 }
 /* End ChartJS */
-
-.blue {
-  background-color: #0770a2;
-}
 
 .footer {
   position: absolute;
