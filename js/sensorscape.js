@@ -50,21 +50,12 @@ angular.module('sensorscape', [ 'ui.bootstrap', 'chart.js',
   beaver.listen(socket);
 
   // Handle events pre-processed by beaver.js
-  beaver.on('appearance', function(event) {
-    handleEvent('appearance', event);
-  });
-  beaver.on('displacement', function(event) {
-    handleEvent('displacement', event);
-  });
-  beaver.on('keep-alive', function(event) {
-    handleEvent('keep-alive', event);
-  });
-  beaver.on('disappearance', function(event) {
-    handleEvent('disappearance', event);
-  });
+  beaver.on('appearance', handleEvent);
+  beaver.on('displacement', handleEvent);
+  beaver.on('keep-alive', handleEvent);
 
   // Handle an event
-  function handleEvent(type, event) {
+  function handleEvent(event) {
     var advData = event.tiraid.identifier.advData;
 
     // Sensor data as manufacturerSpecificData
