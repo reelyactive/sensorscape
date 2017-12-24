@@ -9,6 +9,7 @@ DEFAULT_SOCKET_URL = 'http://localhost:3001';
 MAX_LINE_CHART_DATA_POINTS = 8;
 ACCELERATION_SERIES = [ 'X (g)', 'Y (g)', 'Z (g)' ];
 TEMPERATURE_HUMIDITY_SERIES = [ 'Temperature (C)', 'Relative Humidity (%)' ];
+MAGNETIC_FIELD_SERIES = [ 'X', 'Y', 'Z' ];
 LINE_CHART_OPTIONS = {
   legend: {
     display: true,
@@ -75,6 +76,10 @@ angular.module('sensorscape', [ 'ui.bootstrap', 'chart.js',
   function handleManufacturerSpecificData(data, event) {
     if(data.hasOwnProperty('nearable')) {
       handleNearable(data.nearable, event);
+      $scope.$apply();
+    }
+    else if(data.hasOwnProperty('puckyActive')) {
+      handlePuckyActive(data.puckyActive, event);
       $scope.$apply();
     }
   }
@@ -180,6 +185,43 @@ angular.module('sensorscape', [ 'ui.bootstrap', 'chart.js',
         }
       }
       sensor.data = minew;
+      sensor.time = event.time;
+    }
+  }
+
+  // Handle puckyActive
+  function handlePuckyActive(puckyActive, event) {
+    var puckId = event.deviceId.substr(-4);
+
+    // First decoding
+    if(!$scope.sensors.hasOwnProperty(puckId)) {
+      $scope.sensors[puckId] = {
+        type: "puckyActive",
+        data: puckyActive,
+        time: event.time,
+        initialTime: event.time,
+        series: MAGNETIC_FIELD_SERIES,
+        datapoints: [
+          [ { x: 0, y: puckyActive.magneticFieldX } ],
+          [ { x: 0, y: puckyActive.magneticFieldY } ],
+          [ { x: 0, y: puckyActive.magneticFieldZ } ]
+        ]
+      };
+    }
+
+    // Subsequent decodings (with later event time!)
+    else if(event.time > $scope.sensors[puckId].time) {
+      var sensor = $scope.sensors[puckId];
+      var time = (event.time - sensor.initialTime) / 1000;
+      sensor.datapoints[0].push( { x: time, y: puckyActive.magneticFieldX } );
+      sensor.datapoints[1].push( { x: time, y: puckyActive.magneticFieldY } );
+      sensor.datapoints[2].push( { x: time, y: puckyActive.magneticFieldZ } );
+      if(sensor.datapoints[0].length > MAX_LINE_CHART_DATA_POINTS) {
+        sensor.datapoints[0].shift();
+        sensor.datapoints[1].shift();
+        sensor.datapoints[2].shift();
+      }
+      sensor.data = puckyActive;
       sensor.time = event.time;
     }
   }
