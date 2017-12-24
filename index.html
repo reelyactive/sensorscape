@@ -44,7 +44,11 @@
               <span class="identifier"> {{sensor.type}} {{id}} <span class="caret"></span></span>
             </uib-accordion-heading>
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-2">
+                <img ng-src="{{sensor.image}}"
+                     class="img-responsive center-block">
+              </div>
+              <div class="col-md-4">
                 <table class="table table-hover">
                   <tr ng-repeat="(key, value) in sensor.data">
                     <th> {{key}} </th>

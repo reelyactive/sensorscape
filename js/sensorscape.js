@@ -99,6 +99,7 @@ angular.module('sensorscape', [ 'ui.bootstrap', 'chart.js',
     if(!$scope.sensors.hasOwnProperty(nearable.id)) {
       $scope.sensors[nearable.id] = {
         type: "nearable",
+        image: "images/nearable.jpg",
         data: nearable,
         time: event.time,
         initialTime: event.time,
@@ -146,6 +147,7 @@ angular.module('sensorscape', [ 'ui.bootstrap', 'chart.js',
       }
       switch(minew.productModel) {
         case 1:
+          $scope.sensors[minew.macAddress].image = "images/minew-s1.jpg";
           $scope.sensors[minew.macAddress].series =
                                                   TEMPERATURE_HUMIDITY_SERIES;
           $scope.sensors[minew.macAddress].datapoints = [
@@ -154,6 +156,7 @@ angular.module('sensorscape', [ 'ui.bootstrap', 'chart.js',
           ];
           break;
         case 3:
+          $scope.sensors[minew.macAddress].image = "images/minew-i7.jpg";
           $scope.sensors[minew.macAddress].series = ACCELERATION_SERIES;
           $scope.sensors[minew.macAddress].datapoints = [
             [ { x: 0, y: minew.accelerationX } ],
@@ -197,6 +200,7 @@ angular.module('sensorscape', [ 'ui.bootstrap', 'chart.js',
     if(!$scope.sensors.hasOwnProperty(puckId)) {
       $scope.sensors[puckId] = {
         type: "puckyActive",
+        image: "images/puckjs.jpg",
         data: puckyActive,
         time: event.time,
         initialTime: event.time,
