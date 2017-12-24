@@ -28,29 +28,17 @@ LINE_CHART_OPTIONS = {
  * All of the JavaScript specific to the dashboard is contained inside this
  * angular module.  The only external dependencies are:
  * - beaver (reelyActive)
- * - socket.io (btford)
  * - chart.js (jtblin)
  */
-angular.module('sensorscape', [ 'ui.bootstrap', 'btford.socket-io',
-                                'chart.js', 'reelyactive.beaver' ])
-
-
-/**
- * Socket Factory
- * Creates the websocket connection to the given URL using socket.io.
- */
-.factory('Socket', function(socketFactory) {
-  return socketFactory({
-    ioSocket: io.connect(DEFAULT_SOCKET_URL)
-  });
-})
-
+angular.module('sensorscape', [ 'ui.bootstrap', 'chart.js',
+                                'reelyactive.beaver' ])
 
 /**
  * InteractionCtrl Controller
  * Handles the manipulation of all variables accessed by the HTML view.
  */
-.controller('InteractionCtrl', function($scope, Socket, beaver) {
+.controller('InteractionCtrl', function($scope, beaver) {
+  var socket = io.connect(DEFAULT_SOCKET_URL);
 
   // Variables accessible in the HTML scope
   $scope.devices = beaver.getDevices();
@@ -59,7 +47,7 @@ angular.module('sensorscape', [ 'ui.bootstrap', 'btford.socket-io',
   $scope.lineChartOptions = LINE_CHART_OPTIONS;
 
   // beaver.js listens on the websocket for events
-  beaver.listen(Socket);
+  beaver.listen(socket);
 
   // Handle events pre-processed by beaver.js
   beaver.on('appearance', function(event) {
@@ -96,6 +84,7 @@ angular.module('sensorscape', [ 'ui.bootstrap', 'btford.socket-io',
   function handleManufacturerSpecificData(data, event) {
     if(data.hasOwnProperty('nearable')) {
       handleNearable(data.nearable, event);
+      $scope.$apply();
     }
   }
 
@@ -103,6 +92,7 @@ angular.module('sensorscape', [ 'ui.bootstrap', 'btford.socket-io',
   function handleServiceData(data, event) {
     if(data.hasOwnProperty('minew')) {
       handleMinew(data.minew, event);
+      $scope.$apply();
     }
   }
 
